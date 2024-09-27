@@ -27,12 +27,19 @@ const userSchema = new mongoose.Schema({
         default:"India"
     },
 },{timestamps:true})
-//middleware create
+//middleware create hash password
 
 userSchema.pre('save', async function(){
     const salt = await bcrypt.genSalt(10);
     this.password=await bcrypt.hash(this.password,salt);
 })
+
+//compare password
+
+userSchema.methods.comparePassword= async function(userPassword){
+    const ismatch = await bcrypt.compare(userPassword,this.password);
+    return ismatch;
+}
 
 //jsonwebtoken
 

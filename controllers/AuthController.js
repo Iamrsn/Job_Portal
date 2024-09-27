@@ -41,4 +41,24 @@ const registercontroller = async (req, res, next) => {
   }
 };
 
-module.exports = registercontroller;
+const logincontroller = async (req,res)=>{
+    const {email,password}=req.body;
+    //validation check
+    if(!email || !password){
+      return next("please provide all field")
+    }
+    //find user by email
+    const user = await userModel.findOne({email}).select("+password")
+    if(!user){
+      return next("Invalid username or password")
+    }
+    const ismatch=await user.comparePassword(password);
+    if(!ismatch){
+     return next("Invalid username or password")
+    }
+    user.password=undefined;
+    const token= user.createJWT()
+    res.status(200).json({success:true,message:"Login successfully",user,token})
+}
+
+module.exports = {registercontroller,logincontroller};
