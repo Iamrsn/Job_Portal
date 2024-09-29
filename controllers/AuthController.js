@@ -23,42 +23,42 @@ const registercontroller = async (req, res, next) => {
     const user = await userModel.create({ name, email, password });
     //token
     const token = user.createJWT();
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "user created succesfully",
-        user: {
-          name: user.name,
-          lastname: user.lastname,
-          email: user.email,
-          location: user.location
-        }, 
-        token
-      });
+    res.status(201).json({
+      success: true,
+      message: "user created succesfully",
+      user: {
+        name: user.name,
+        lastname: user.lastname,
+        email: user.email,
+        location: user.location,
+      },
+      token,
+    });
   } catch (error) {
     return next(error);
   }
 };
 
-const logincontroller = async (req,res)=>{
-    const {email,password}=req.body;
-    //validation check
-    if(!email || !password){
-      return next("please provide all field")
-    }
-    //find user by email
-    const user = await userModel.findOne({email}).select("+password")
-    if(!user){
-      return next("Invalid username or password")
-    }
-    const ismatch=await user.comparePassword(password);
-    if(!ismatch){
-     return next("Invalid username or password")
-    }
-    user.password=undefined;
-    const token= user.createJWT()
-    res.status(200).json({success:true,message:"Login successfully",user,token})
-}
+const logincontroller = async (req, res) => {
+  const { email, password } = req.body;
+  //validation check
+  if (!email || !password) {
+    return next("please provide all field");
+  }
+  //find user by email
+  const user = await userModel.findOne({ email }).select("+password");
+  if (!user) {
+    return next("Invalid username or password");
+  }
+  const ismatch = await user.comparePassword(password);
+  if (!ismatch) {
+    return next("Invalid username or password");
+  }
+  user.password = undefined;
+  const token = user.createJWT();
+  res
+    .status(200)
+    .json({ success: true, message: "Login successfully", user, token });
+};
 
-module.exports = {registercontroller,logincontroller};
+module.exports = { registercontroller, logincontroller };

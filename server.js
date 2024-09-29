@@ -11,6 +11,7 @@ const connectDB=require("./config/db.js")
 const TestRoutes = require("./routes/TestRoutes")
 const AuthRoutes = require("./routes/AuthRoutes");
 const errormiddleware = require("./middlewares/ErrorMiddleware.js");
+const userRoutes = require("./routes/userRoutes")
 
 //middlewares
 app.use(express.json())
@@ -19,7 +20,8 @@ app.use(morgan("dev"))
 
 //import routes from test routes..
 app.use("/api/test",TestRoutes);
-app.use("/api/auth",AuthRoutes)
+app.use("/api/auth",AuthRoutes);
+app.use("/api/user",userRoutes)
 
 //validation middlewares
 app.use(errormiddleware)
